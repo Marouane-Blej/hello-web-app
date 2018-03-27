@@ -6,6 +6,10 @@ from django.contrib.auth.views import (
     password_change,
     password_change_done,
 )
+#To redirecte
+from django.views.generic import (TemplateView,
+    RedirectView,
+)
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
@@ -27,7 +31,7 @@ urlpatterns = [
 ]
 '''
 
-# the new looks like this
+# the new urls looks like this
 
 urlpatterns = [
     url(r'^$', views.index, name='home'),
@@ -80,5 +84,23 @@ urlpatterns = [
         name='registration_create_thing'),
     url(r'^accounts/',
         include('registration.backends.default.urls')),
+    #New browse flow
+    url(r'^browse/name/$',
+        views.browse_by_name, name='browse'),
+    url(r'^browse/name/(?P<initial>[-\w]+)/$',
+        views.browse_by_name, name='browse_by_name'),
+    #New redirect view
+    url(r'^browse/$', RedirectView.as_view(pattern_name='browse', permanent=True)),
+    url(r'^browse/name/$', views.browse_by_name, name='browse'),
+    url(r'^browse/name/(?P<initial>[-\w]+)/$', views.browse_by_name, name='browse_by_name'),
+    #Redirect for things
+    url(r'^things/$', RedirectView.as_view(pattern_name='browse', permanent=True)),
+    url(r'^things/(?P<slug>[-\w]+)/$', views.thing_detail, name='thing_detail'),
+    url(r'^things/(?P<slug>[-\w]+)/edit/$', views.edit_thing, name='edit_thing'),
+    #for pw reset
+    url(r'^accounts/password/reset/$',
+        password_reset,
+        {'template_name': 'registration/password_reset_form.html'},
+        name="password_reset"),
     url(r'^admin/', admin.site.urls),
 ]
