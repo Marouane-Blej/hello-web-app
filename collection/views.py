@@ -23,6 +23,8 @@ def index(request):
     things = Thing.objects.all()
 
     return render(request, 'index.html', {
+        #For test purposes
+        #'things': thinggs,
         'things': things,
     })
 
